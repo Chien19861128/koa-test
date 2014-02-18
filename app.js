@@ -1,43 +1,34 @@
 var logger = require('koa-logger');
-var views = require('co-views');
-var parse = require('co-body');
 var koa = require('koa');
-var route = require('koa-route');
+var router = require('koa-router');
 var app = module.exports = koa();
-//var monk = require('monk');
-//var wrap = require('co-monk');
-var thunkify = require('thunkify');
-var mongoose = require('mongoose');
-mongoose.connect = thunkify(mongoose.connect);
-mongoose.connection = thunkify(mongoose.connection);
-mongoose.Schema = thunkify(mongoose.Schema);
-mongoose.model = thunkify(mongoose.model);
-mongoose.model.find = thunkify(mongoose.model.find);
-mongoose.model.save = thunkify(mongoose.model.save);
-var api = require('./routes/api');
-
-var db = mongoose.connection;
-
-var vcardSchema = new mongoose.Schema({
-    name: String,
-    nickname: String,
-    tel: String
-})
-
-app.db = {
-    model: mongoose.model('user', vcardSchema)
-};
 
 app.use(logger());
+app.use(router(app));
 
-app.use(route.get('/book', api.list));
-app.use(route.get('/book/:title', api.show));
-
-app.get('/book/:title', function(req, res) {
-  title = decodeURI(req.params.title);
-  book.find({title: title}, function(error, book) {
-    res.send(book);
-  });
+app.get('/book', function *() {
+    var api = require('./routes/api');
+    yield api.list(this);
 });
 
-if (!module.parent) app.listen(3333);
+app.get('/book/:title', function *() {
+    var api = require('./routes/api');
+    yield api.show(this);
+});
+
+app.post('/book', function *() {
+    var api = require('./routes/api');
+    yield api.create(this);
+});
+
+app.put('/book/:title', function *() {
+    var api = require('./routes/api');
+    yield api.update(this);
+});
+
+/*app.del('/book/:title', function *() {
+    var api = require('./routes/api');
+    yield api.del(this);
+});*/
+
+if (!module.parent) app.listen(3300);
