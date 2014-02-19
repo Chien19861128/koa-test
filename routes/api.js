@@ -1,19 +1,19 @@
 var views = require('co-views');
 var parse = require('co-body');
 
-var models = require('../models/');
-var required_models = ['books'];
-var loaded_models = models.connect(required_models).next().value;
+var books = require('../models/books');
+//var required_models = ['books'];
+//var loaded_models = models.connect(required_models).next().value;
 
 
 exports.list = function *list(app) {
-    var res = yield loaded_models.books.find({});
+    var res = yield books.find({});
     app.body = res;
 }
 
 exports.show = function *show(app) {
     title = decodeURI(app.params.title);
-    var res = yield loaded_models.books.find({title: title});
+    var res = yield books.find({title: title});
     app.body = res;
 }
 
@@ -21,10 +21,12 @@ exports.create = function *create(app) {
 
     var write_value = yield parse(app);
 
-    var validate = loaded_models.books.validate(write_value).next().value;
+    var validate = books.validate(write_value).next().value;
+
+    console.log('[validate] '+validate);
 
     if (true === validate) {
-        app.body = yield loaded_models.books.insert(write_value);
+        app.body = yield books.insert(write_value);
     } else {
         app.body = validate;
     }
@@ -35,10 +37,10 @@ exports.update = function *update(app) {
 
     var write_value = yield parse(app);
 
-    var validate = loaded_models.books.validate(write_value).next().value;
+    var validate = books.validate(write_value).next().value;
 
     if (true === validate) {
-        app.body = yield loaded_models.books.findAndModify(
+        app.body = yield books.findAndModify(
           {query: {title: title}, update: write_value});
     } else {
         app.body = validate;
@@ -47,6 +49,6 @@ exports.update = function *update(app) {
 
 exports.del = function *del(app) {
     title = decodeURI(app.params.title);
-    var res = yield loaded_models.books.remove({title: title});
+    var res = yield books.remove({title: title});
     app.body = res;
 }
