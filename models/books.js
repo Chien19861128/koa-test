@@ -25,14 +25,11 @@ var index = [
     }
 ];
 
+books.index('title', { unique: true });
+
 books.schema = function *schema() {
 
     yield schema;
-}
-
-books.index = function *index() {
-
-    yield index;
 }
 
 books.validate = function *validate(write_value) {    

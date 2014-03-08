@@ -5,10 +5,14 @@ var books = require('../models/books');
 //var required_models = ['books'];
 //var loaded_models = models.connect(required_models).next().value;
 
+//Specifying Swig view engine
+var render= views(__dirname + '/../views', { map: { html: 'swig' }});
+//var render= views('../views', { map: { html: 'swig' }});
 
 exports.list = function *list(app) {
     var res = yield books.find({});
-    app.body = res;
+    //app.body = res;
+    app.body = yield render('list', { books: res });
 }
 
 exports.show = function *show(app) {
