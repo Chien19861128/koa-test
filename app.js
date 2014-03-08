@@ -1,9 +1,11 @@
 var logger = require('koa-logger');
+var serve = require('koa-static');
 var koa = require('koa');
 var router = require('koa-router');
 var app = module.exports = koa();
 
 app.use(logger());
+app.use(serve('public'));
 app.use(router(app));
 
 app.get('/book', function *() {

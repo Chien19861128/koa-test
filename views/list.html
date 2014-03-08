@@ -1,0 +1,19 @@
+{% extends 'layout.html' %}
+
+{% block title %}Book List{% endblock %}
+
+{% block content %}
+  <h1>Book List</h1>
+  <p>You have <strong>{{ books.length }}</strong> books!</p>
+  <p><a href="/book/new">Add new book</a></p>
+  <ul id="books">
+    {% for book in books %}
+      <li>
+          <strong>{{ book.title }}</strong> ||
+          <a href="/book/{{ book.title }}">View Details</a> ||
+          <a href="/book/edit/{{ book.title }}">Edit</a> ||
+          <a href="/book/delete/{{ book.title }}">Delete</a>
+      </li>
+    {% endfor %}
+  </ul>
+{% endblock %}
